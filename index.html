@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gökçe Bebiş - Geri Sayım</title>
+
+  <!-- ✅ Link önizleme (WhatsApp/Telegram/iMessage) -->
+  <meta property="og:title" content="Gökçe Bebişin Doğmasına Kalan Günler" />
+  <meta property="og:description" content="Sayaç otomatik güncellenir. Doğum anında 'Hoş geldin Gökçe' mesajına geçer." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="og-image.png" />
+
+  <!-- ✅ ikonlar -->
+  <link rel="icon" type="image/png" href="favicon-32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <!-- Bebek temalı font -->
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(180deg, #fdecef, #fdf6f0);
+      font-family: 'Baloo 2', cursive;
+    }
+
+    /* Uçuşan ikonlar */
+    .float-item {
+      position: absolute;
+      bottom: -30px;
+      opacity: 0.78;
+      animation: floatUp linear infinite;
+      user-select: none;
+      pointer-events: none;
+      will-change: transform, opacity;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.08));
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.85; }
+      to   { transform: translateY(-120vh) scale(1.25) rotate(10deg); opacity: 0; }
+    }
+
+    /* Kart */
+    .card {
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      max-width: 380px;
+      width: 92%;
+      z-index: 2;
+    }
+
+    .headline {
+      font-size: 20px;
+      color: #8b5d6e;
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+
+    .name {
+      font-size: 30px;
+      font-weight: 600;
+      color: #d67fa3;
+    }
+
+    .number {
+      margin-top: 14px;
+      font-size: 76px;
+      font-weight: 600;
+      color: #7bb7b2;
+      line-height: 1;
+    }
+
+    .days {
+      font-size: 20px;
+      color: #8b8b8b;
+      margin-top: 8px;
+    }
+
+    /* Hoş geldin ekranı + animasyon */
+    .welcome {
+      display: none;
+      color: #d67fa3;
+      font-weight: 600;
+    }
+
+    .welcome.show {
+      display: block;
+      animation: popIn 650ms ease-out both;
+    }
+
+    @keyframes popIn {
+      0%   { transform: scale(0.85); opacity: 0; }
+      60%  { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1.0); }
+    }
+
+    .welcome-text {
+      font-size: 32px;
+    }
+
+    .emoji {
+      font-size: 28px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div id="countdown">
+      <div class="headline">
+        <span class="name">Gökçe</span> Bebişin Doğmasına Son
+      </div>
+      <div class="number" id="counter">96</div>
+      <div class="days">Gün</div>
+    </div>
+
+    <div id="welcome" class="welcome">
+      <div class="welcome-text">Hoş geldin Gökçe</div>
+      <div class="emoji">🎀 👶 🤍</div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ Burayı istediğin doğum tarih/saatine göre değiştir (Türkiye saati +03:00)
+    const targetDateTime = new Date("2026-05-13T08:00:00+03:00");
+
+    function updateCountdown() {
+      const now = new Date();
+
+      const countdownEl = document.getElementById("countdown");
+      const welcomeEl = document.getElementById("welcome");
+
+      if (now >= targetDateTime) {
+        countdownEl.style.display = "none";
+        welcomeEl.classList.add("show");
+        return;
+      }
+
+      // Gün bazlı sayaç (tam gün)
+      const ms = targetDateTime - now;
+      const days = Math.ceil(ms / (1000 * 60 * 60 * 24)); // yukarı yuvarla
+      document.getElementById("counter").textContent = Math.max(days, 0);
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 30 * 1000); // 30 sn'de bir güncelle
+
+    /* 💗🐝🐞⭐🌸 uçuşan ikonlar */
+    const items = [
+      { char: "❤",  min: 16, max: 30, color: "#f4a7b9", weight: 45 },
+      { char: "🐝", min: 18, max: 34, color: "",        weight: 18 },
+      { char: "🐞", min: 18, max: 34, color: "",        weight: 18 },
+      { char: "⭐",  min: 14, max: 26, color: "#f7c948", weight: 10 },
+      { char: "🌸", min: 16, max: 28, color: "",        weight: 9 }
+    ];
+
+    function pickItem() {
+      const total = items.reduce((s, i) => s + i.weight, 0);
+      let r = Math.random() * total;
+      for (const it of items) {
+        r -= it.weight;
+        if (r <= 0) return it;
+      }
+      return items[0];
+    }
+
+    function createFloatItem() {
+      const it = pickItem();
+      const el = document.createElement("div");
+      el.className = "float-item";
+      el.textContent = it.char;
+
+      el.style.left = Math.random() * 100 + "vw";
+      const size = it.min + Math.random() * (it.max - it.min);
+      el.style.fontSize = size + "px";
+
+      if (it.color) el.style.color = it.color;
+
+      const duration = 7 + Math.random() * 7; // 7-14s
+      el.style.animationDuration = duration + "s";
+
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), (duration + 2) * 1000);
+    }
+
+    setInterval(createFloatItem, 650);
+  </script>
+</body>
+</html>
