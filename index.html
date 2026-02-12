@@ -29,6 +29,30 @@
       align-items: center;
       background: linear-gradient(180deg, #fdecef, #fdf6f0);
       font-family: 'Baloo 2', cursive;
+      position: relative;
+    }
+
+    /* ✅ Seçenek 2: Arka plan blob’ları */
+    .bg-blob {
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, rgba(244,167,185,0.55), rgba(253,236,239,0));
+      filter: blur(10px);
+      z-index: 0;
+      left: 50%;
+      top: 50%;
+      transform: translate(-60%, -55%);
+      pointer-events: none;
+    }
+
+    .bg-blob.two {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle at 60% 40%, rgba(123,183,178,0.35), rgba(253,246,240,0));
+      transform: translate(-35%, -20%);
+      opacity: 0.95;
     }
 
     /* Uçuşan ikonlar */
@@ -42,6 +66,7 @@
       animation-name: floatUp;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
+      z-index: 1; /* blobların üstünde */
     }
 
     @keyframes floatUp {
@@ -59,6 +84,7 @@
       filter: blur(0.2px);
       will-change: transform;
       transition: transform 42s linear;
+      z-index: 1; /* blobların üstünde */
     }
 
     /* Kart (soft glow + nabız) */
@@ -70,11 +96,9 @@
       max-width: 410px;
       width: 92%;
       z-index: 2;
-
       box-shadow:
         0 10px 30px rgba(0, 0, 0, 0.08),
         0 0 40px rgba(214, 127, 163, 0.22);
-
       animation: glowPulse 6s ease-in-out infinite;
       position: relative;
     }
@@ -85,13 +109,13 @@
       100% { box-shadow: 0 10px 30px rgba(0,0,0,0.08), 0 0 35px rgba(214,127,163,0.20); }
     }
 
-    /* ✅ A Tasarımı: Polaroid ultrason */
+    /* Polaroid ultrason */
     .polaroid {
       width: min(320px, 86%);
       margin: 0 auto 14px;
       background: #fff;
       border-radius: 18px;
-      padding: 10px 10px 18px; /* altta polaroid boşluğu */
+      padding: 10px;
       box-shadow: 0 14px 34px rgba(0,0,0,0.10);
       border: 1px solid rgba(214, 127, 163, 0.18);
       transform: rotate(-1.2deg);
@@ -104,19 +128,6 @@
       border-radius: 14px;
       display: block;
       filter: contrast(1.02) saturate(1.02);
-    }
-
-    .polaroid .caption {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #8b5d6e;
-      opacity: 0.85;
-    }
-
-    .moon {
-      font-size: 22px;
-      opacity: 0.5;
-      margin: 6px 0 6px;
     }
 
     .headline {
@@ -155,7 +166,7 @@
       margin-top: 8px;
     }
 
-    /* 🌸 Progress Bar */
+    /* Progress Bar */
     .progress-wrap {
       width: 100%;
       height: 10px;
@@ -173,7 +184,7 @@
       transition: width 1.2s ease-in-out;
     }
 
-    /* ☁️ Not balonu (bulut) */
+    /* Not balonu (bulut) */
     .note-cloud {
       margin: 14px auto 0;
       display: inline-block;
@@ -232,23 +243,52 @@
     .welcome-text { font-size: 32px; }
     .emoji { font-size: 28px; margin-top: 12px; }
 
-    @media (max-width: 380px) {
-      .polaroid img { height: 170px; }
+    /* ✅ Seçenek 1: Mobilde kart küçülsün + padding azalsın */
+    @media (max-width: 520px) {
+      .card {
+        max-width: 340px;
+        width: 90%;
+        padding: 18px 18px 22px;
+        border-radius: 24px;
+      }
+
+      .polaroid {
+        width: 92%;
+        margin-bottom: 10px;
+        transform: rotate(-0.6deg);
+      }
+
+      .polaroid img {
+        height: 155px;
+      }
+
+      .number {
+        font-size: 66px;
+      }
+
+      .bg-blob {
+        width: 520px;
+        height: 520px;
+      }
+
+      .bg-blob.two {
+        width: 440px;
+        height: 440px;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- ✅ Seçenek 2: bloblar -->
+  <div class="bg-blob"></div>
+  <div class="bg-blob two"></div>
+
   <div class="card">
     <div id="countdown">
-
-      <!-- ✅ Polaroid ultrason (A tasarımı) -->
       <div class="polaroid">
-        <img src="ultrason.jpeg" alt="Ultrason görüntüsü">
-        <div class="caption">Gökçe • Ultrason 🤍</div>
+        <img src="ultrason.jpeg">
       </div>
-
-      <div class="moon">🌙</div>
 
       <div class="headline">
         <span class="name">Gökçe</span> Bebişin Doğmasına Son
@@ -272,13 +312,10 @@
   </div>
 
   <script>
-    // --- Ayarlar ---
-    const pregnancyTotalDays = 280; // ✅ bar oranı için
+    const pregnancyTotalDays = 280;
     const targetDateTime = new Date("2026-05-13T08:00:00+03:00");
-
     let lastDay = null;
 
-    // ☁️ Günlük notlar
     const notes = [
       "Bugün minik bir gülümseme yeter 🤍",
       "Kalpler her gün biraz daha hazır 💗",
@@ -286,14 +323,13 @@
       "Sabırla ve sevgiyle… 👶",
       "Bugün de birlikte bekliyoruz 🎀",
       "Minik mucizeye selam! 🌸",
-      "Huzurlu bir gün olsun ☁️",
       "Gökçe’ye bir gün daha yakınız 🫶"
     ];
 
     function getTodayKey() {
       const d = new Date();
       d.setHours(0,0,0,0);
-      return d.toISOString().slice(0,10); // YYYY-MM-DD
+      return d.toISOString().slice(0,10);
     }
 
     function pickDailyNote() {
@@ -323,6 +359,7 @@
           `translate(-50%, -50%) translate(${Math.random()*120-60}px, ${Math.random()*120-60}px)`;
         spark.style.transition = "all 1s ease-out";
         spark.style.filter = "drop-shadow(0 6px 10px rgba(0,0,0,0.10))";
+        spark.style.zIndex = "3";
         document.body.appendChild(spark);
 
         setTimeout(() => {
@@ -345,7 +382,7 @@
         return;
       }
 
-      // ✅ Kalan gün: gece 00:00'a göre düşsün
+      // Kalan gün: gece 00:00'a göre
       const todayMidnight = new Date(now);
       todayMidnight.setHours(0, 0, 0, 0);
 
@@ -357,12 +394,11 @@
 
       document.getElementById("counter").textContent = remainingDays;
 
-      // ✅ Bar: (280 - kalan) / 280
+      // Bar: (280 - kalan) / 280
       const progressPercent = ((pregnancyTotalDays - remainingDays) / pregnancyTotalDays) * 100;
       document.getElementById("progressBar").style.width =
         Math.min(Math.max(progressPercent, 0), 100) + "%";
 
-      // Gün değiştiyse kutlama + yeni not
       if (lastDay !== null && remainingDays < lastDay) {
         celebrate();
         pickDailyNote();
@@ -373,7 +409,7 @@
     function scheduleMidnightTick() {
       const now = new Date();
       const nextMidnight = new Date(now);
-      nextMidnight.setHours(24, 0, 1, 0); // 00:00:01
+      nextMidnight.setHours(24, 0, 1, 0);
 
       setTimeout(() => {
         updateCountdown();
@@ -381,7 +417,7 @@
       }, nextMidnight - now);
     }
 
-    /* 💗🐝🐞⭐🌸 uçuşan ikonlar (katmanlı) */
+    /* ikonlar */
     const items = [
       { char: "❤",  min: 16, max: 30, color: "#f4a7b9", weight: 45 },
       { char: "🐝", min: 18, max: 34, color: "",        weight: 18 },
@@ -438,7 +474,7 @@
 
     setInterval(createFloatItem, 650);
 
-    /* ☁️ Arka plan bulutları */
+    /* arka plan bulutları */
     function spawnBgCloud() {
       const cloud = document.createElement("div");
       cloud.className = "cloud-bg";
@@ -454,7 +490,6 @@
     setInterval(spawnBgCloud, 12000);
     spawnBgCloud();
 
-    // İlk yükleme
     pickDailyNote();
     updateCountdown();
     setInterval(updateCountdown, 30 * 1000);
